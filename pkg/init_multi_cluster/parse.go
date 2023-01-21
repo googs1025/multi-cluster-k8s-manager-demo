@@ -13,7 +13,7 @@ func (m *MultiClusterClient) ReadMultiClusterConfig() {
 
 	p := common.GetWd()
 	files, _ := ioutil.ReadDir(p + "/resources")
-	path := "/Users/zhenyu.jiang/go/src/golanglearning/new_project/mutli-cluster-k8s-manager/resources"
+	path := p + "/resources"
 	m.parseConfigs(files, path)
 }
 
