@@ -1,5 +1,8 @@
 ## multi-cluster-k8s-manager-demo
 ## k8s多集群后端接口展示demo
+### 项目思路：
+对多个集群采用informer的方式管理k8s资源，server中使用key为集群名的方式区分不同集群。
+![](https://github.com/googs1025/multi-cluster-k8s-manager-demo/blob/main/image/%E6%B5%81%E7%A8%8B%E5%9B%BE.jpg?raw=true)
 
 
 ### 启动步骤：
