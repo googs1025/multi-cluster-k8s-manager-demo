@@ -8,7 +8,7 @@ import (
 	"mutli-cluster-k8s-manager/pkg/services"
 )
 
-// deployment控制器
+// pod控制器
 type PodCtl struct {
 	K8sClient kubernetes.Interface  `inject:"-"`
 	PodService *services.PodService `inject:"-"`
@@ -21,20 +21,20 @@ func NewPodCtl() *PodCtl {
 	}
 }
 
-// Name 实现deployment controller 框架规范
+// Name 实现pod controller 框架规范
 func (*PodCtl) Name() string {
 	return "PodCtl"
 }
 
-// Build 实现deployment controller 路由 框架规范
+// Build 实现pod controller 路由 框架规范
 func (p *PodCtl) Build(goft *goft.Goft) {
 	goft.Handle("GET", "/pods", p.List)
 }
 
 // List 获取dep列表
 func (p *PodCtl) List(c *gin.Context) goft.Json {
-	namespace := c.DefaultQuery("namespace", "default") // 请求： GET /deployments?namespace=xxxxxxx
-	clusterName := c.DefaultQuery("cluster", "cluster0")
+	namespace := c.DefaultQuery("namespace", "default")  // 请求：GET /pods?namespace=xxx
+	clusterName := c.DefaultQuery("cluster", "cluster0") // 请求：GET /pods?namespace=xxx&cluster=xxx
 	// 配合前端
 
 	clusterName1 := init_multi_cluster.GetClusterName(clusterName)

@@ -1,13 +1,13 @@
 package init_multi_cluster
 
-func ListClusterName() []string {
-	clusterNameList := make([]string, 0)
+func ListClusterName() map[string]string {
+	clusterNameMap := make(map[string]string, 0)
 
-	for _, v := range MultiClusterController.clusters {
-		clusterNameList = append(clusterNameList, v)
+	for k, v := range MultiClusterController.clusters {
+		clusterNameMap[k] = v
 	}
 
-	return clusterNameList
+	return clusterNameMap
 }
 
 func GetClusterName(name string) string {

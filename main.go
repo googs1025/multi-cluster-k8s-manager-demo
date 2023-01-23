@@ -48,6 +48,7 @@ func main() {
 			controllers.NewDeploymentCtl(),
 			controllers.NewPodCtl(),
 			controllers.NewNodeCtl(),
+			controllers.NewClusterCtl(),
 
 		).
 		Attach(

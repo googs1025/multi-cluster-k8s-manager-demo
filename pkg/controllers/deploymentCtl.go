@@ -32,8 +32,8 @@ func (d *DeploymentCtl) Build(goft *goft.Goft) {
 
 // List 获取dep列表
 func (d *DeploymentCtl) List(c *gin.Context) goft.Json {
-	namespace := c.DefaultQuery("namespace", "default") // 请求： GET /deployments?namespace=xxxxxxx
-	clusterName := c.DefaultQuery("cluster", "cluster0")
+	namespace := c.DefaultQuery("namespace", "default") 	// 请求：GET /deployments?namespace=xxx
+	clusterName := c.DefaultQuery("cluster", "cluster0")    // 请求：GET /deployments?namespace=xxx&cluster=xxx
 	// 配合前端
 
 	clusterName1 := init_multi_cluster.GetClusterName(clusterName)
@@ -46,7 +46,7 @@ func (d *DeploymentCtl) List(c *gin.Context) goft.Json {
 }
 
 //func (d *DeploymentCtl) List(c *gin.Context) {
-//	namespace := c.DefaultQuery("namespace", "default") // 请求： GET /deployments?namespace=xxxxxxx
+//	namespace := c.DefaultQuery("namespace", "default") // 请求： GET /deployments?namespace=xxx
 //	clusterName := c.DefaultQuery("cluster", "cluster0")
 //	// 配合前端
 //	//return gin.H{
