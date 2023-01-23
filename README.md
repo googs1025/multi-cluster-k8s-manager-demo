@@ -7,17 +7,19 @@
 2. 可以放置多个.kube/config配置文件，支持多集群list查询。
 3. go run main.go启动服务
 ```
-➜  mutli-cluster-k8s-manager git:(sidecar_fix) ✗ go run main.go
-start informer!!
-start informer!!
-start informer!!
+➜  mutli-cluster-k8s-manager git:(main) ✗ go run main.go
+cluster https://xxxxxx:6443 start informer!!
+cluster https://xxxxxx:6443 start informer!!
+cluster https://xxxxxx start informer!!
 [GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
  - using env:   export GIN_MODE=release
  - using code:  gin.SetMode(gin.ReleaseMode)
 
-2023/01/21 10:54:31 open /Users/zhenyu.jiang/go/src/golanglearning/new_project/mutli-cluster-k8s-manager/application.yaml: no such file or directory
+2023/01/23 16:05:39 open /Users/zhenyu.jiang/go/src/golanglearning/new_project/mutli-cluster-k8s-manager/application.yaml: no such file or directory
 [GIN-debug] GET    /deployments              --> github.com/shenyisyn/goft-gin/goft.JsonResponder.RespondTo.func1 (3 handlers)
 [GIN-debug] GET    /pods                     --> github.com/shenyisyn/goft-gin/goft.JsonResponder.RespondTo.func1 (3 handlers)
+[GIN-debug] GET    /nodes                    --> github.com/shenyisyn/goft-gin/goft.JsonResponder.RespondTo.func1 (3 handlers)
+[GIN-debug] GET    /clusters                 --> github.com/shenyisyn/goft-gin/goft.JsonResponder.RespondTo.func1 (3 handlers)
 [GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
 Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
 [GIN-debug] Listening and serving HTTP on :8080
@@ -28,6 +30,8 @@ Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-
 ```
 http://localhost:8080/pods
 http://localhost:8080/deployments
+http://localhost:8080/clusters
+http://localhost:8080/nodes?cluster=cluster1
 http://localhost:8080/pods?cluster=cluster0
 http://localhost:8080/pods?cluster=cluster0&namespace=default
 http://localhost:8080/deployments?cluster=cluster1&namespace=default
