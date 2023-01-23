@@ -8,7 +8,6 @@ import (
 type PodService struct {
 	PodMap *PodMap `inject:"-"`
 	Common *CommonService `inject:"-"`
-	//EventMap *EventMap `inject:"-"`
 }
 
 func NewPodService() *PodService {
@@ -44,7 +43,7 @@ func(p *PodService) ListByNamespace(namespace string, clusterName string) []*mod
 			Phase: string(pod.Status.Phase),
 			Ip: []string{pod.Status.PodIP, pod.Status.HostIP},
 			IsReady: p.Common.PodIsReady(pod), // 查看pod是否ready
-			//Message: p.EventMap.GetMessage(pod.Namespace,"Pod", pod.Name),
+			Message: MultiClusterResourceHandler.EventHandlerList[clusterName].EventMap.GetMessage(pod.Namespace,"Pod", pod.Name),
 			CreateTime: pod.CreationTimestamp.Format("2006-01-02 15:04:05"),
 
 		})

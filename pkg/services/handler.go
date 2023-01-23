@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
 	"log"
@@ -72,10 +73,9 @@ type PodHandler struct {
 
 func NewPodHandler() *PodHandler {
 	podMap := NewPodMap()
-	//deploymentService := NewDeploymentService()
 	return &PodHandler{
 		PodMap: podMap,
-		//DeploymentService: deploymentService,
+
 	}
 }
 
@@ -122,6 +122,91 @@ func(p *PodHandler)	OnDelete(obj interface{}){
 	//			"ns": ns,
 	//			"data":p.PodService.ListByNamespace(obj.(*corev1.Pod).Namespace),
 	//		},
+	//	},
+	//)
+}
+
+// event 事件相关的handler
+type EventHandler struct {
+	EventMap *EventMap  `inject:"-"`
+}
+
+func NewEventHandler() *EventHandler {
+	eventMap := NewEventMap()
+
+	return &EventHandler{
+		EventMap: eventMap,
+	}
+}
+
+func(e *EventHandler) storeData(obj interface{}, isdelete bool){
+	if event, ok := obj.(*corev1.Event); ok {
+		key := fmt.Sprintf("%s_%s_%s", event.Namespace, event.InvolvedObject.Kind, event.InvolvedObject.Name)
+		if !isdelete {
+
+			e.EventMap.data[key] = event
+		} else {
+			delete(e.EventMap.data,key)
+
+		}
+	}
+}
+
+func(e *EventHandler) OnAdd(obj interface{}){
+	e.storeData(obj,false)
+}
+func(e *EventHandler) OnUpdate(oldObj, newObj interface{}){
+	e.storeData(newObj,false)
+}
+func(e *EventHandler) OnDelete(obj interface{}){
+	e.storeData(obj,true)
+}
+
+//Node相关的handler
+type NodeHandler struct {
+	NodeMap *NodeMap  `inject:"-"`
+	NodeService *NodeService `inject:"-"`
+}
+
+func NewNodeHandler() *NodeHandler {
+	nodeMap := NewNodeMap()
+
+	return &NodeHandler{
+		NodeMap: nodeMap,
+	}
+}
+
+func(nm *NodeHandler) OnAdd(obj interface{}){
+	nm.NodeMap.Add(obj.(*corev1.Node))
+
+	//wscore.ClientMap.SendAll(
+	//	gin.H{
+	//		"type":"node",
+	//		"result":gin.H{"ns":"node",
+	//			"data":nm.NodeService.ListAllNodes()},
+	//	},
+	//)
+}
+func(nm *NodeHandler) OnUpdate(oldObj, newObj interface{}){
+	//重点： 只要update返回true 才会发送 。否则不发送
+	if nm.NodeMap.Update(newObj.(*corev1.Node)){
+		//wscore.ClientMap.SendAll(
+		//	gin.H{
+		//		"type":"node",
+		//		"result":gin.H{"ns":"node",
+		//			"data":nm.NodeService.ListAllNodes()},
+		//	},
+		//)
+	}
+}
+func(nm *NodeHandler) OnDelete(obj interface{}){
+	nm.NodeMap.Delete(obj.(*corev1.Node))
+
+	//wscore.ClientMap.SendAll(
+	//	gin.H{
+	//		"type":"node",
+	//		"result":gin.H{"ns":"node",
+	//			"data":nm.NodeService.ListAllNodes()},
 	//	},
 	//)
 }

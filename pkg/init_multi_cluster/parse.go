@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"io/ioutil"
 	"mutli-cluster-k8s-manager/pkg/common"
+	"mutli-cluster-k8s-manager/pkg/helpers"
 	"mutli-cluster-k8s-manager/pkg/services"
 	"strconv"
 )
@@ -26,11 +27,20 @@ func (m *MultiClusterClient) parseConfigs(files []fs.FileInfo, path string) {
 		client := InitClient(res)
 		MultiClusterController.clients[res.Host] = client
 
+		versionClient := InitMetricClient(res)
+		helpers.MultiVersionClusterController.VersionClients[res.Host] = versionClient
+
 		depHandler := services.NewDeploymentHandler()
 		services.MultiClusterResourceHandler.DeploymentHandlerList[res.Host] = depHandler
 
 		podHandler := services.NewPodHandler()
 		services.MultiClusterResourceHandler.PodHandlerList[res.Host] = podHandler
+
+		eventHandler := services.NewEventHandler()
+		services.MultiClusterResourceHandler.EventHandlerList[res.Host] = eventHandler
+
+		nodeHandler := services.NewNodeHandler()
+		services.MultiClusterResourceHandler.NodeHandlerList[res.Host] = nodeHandler
 
 		informerFactory := InitInformer(client, res.Host)
 		MultiClusterController.facts[res.Host] = informerFactory

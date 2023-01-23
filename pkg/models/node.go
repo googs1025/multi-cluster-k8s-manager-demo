@@ -25,7 +25,15 @@ type NodeCapacity struct {
 
 // NodeUsage 使用情况
 type NodeUsage struct {
-	Cpu  int64
-	Memory int64
-	Pods int64
+	Cpu  float64
+	Memory float64
+	Pods int
+}
+
+func NewNodeCapacity(cpu int64, memory int64, pods int64) *NodeCapacity {
+	return &NodeCapacity{Cpu: cpu, Memory: memory, Pods: pods}
+}
+
+func NewNodeUsage(pods int, cpu float64, memory float64) *NodeUsage {
+	return &NodeUsage{Pods: pods, Cpu: cpu, Memory: memory}
 }

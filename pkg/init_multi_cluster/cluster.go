@@ -1,6 +1,5 @@
 package init_multi_cluster
 
-
 func ListClusterName() []string {
 	clusterNameList := make([]string, 0)
 

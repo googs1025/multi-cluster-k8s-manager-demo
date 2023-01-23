@@ -4,13 +4,12 @@ import (
 	"fmt"
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
-
 	"reflect"
 )
 
 // DeploymentMap 使用informer监听资源变化后，事件变化加入map中
 type DeploymentMap struct {
-	data map[string]interface{}
+	data map[string]interface{} // [key string] []*v1.Deployment    key=>namespace
 }
 
 func NewDeploymentMap() *DeploymentMap {
@@ -188,4 +187,69 @@ func(p *PodMap) GetNum(nodeName string) (num int){
 	return
 }
 
+// event 事件map 相关
+// EventSet 集合 用来保存事件, 只保存最新的一条
+type EventMap struct {
+	data map[string]interface{} // [key string] *v1.Event
+	// key=>namespace+"_"+kind+"_"+name 这里的name 不一定是pod ,这样确保唯一
+}
+
+func NewEventMap() *EventMap {
+	data := make(map[string]interface{}, 0)
+	return &EventMap{data: data}
+}
+
+func(e *EventMap) GetMessage(ns string, kind string, name string) string {
+	key := fmt.Sprintf("%s_%s_%s", ns, kind, name)
+	if v, ok := e.data[key]; ok {
+		return v.(*corev1.Event).Message
+	}
+
+	return ""
+}
+
+
+// node map
+type NodeMap struct {
+	data map[string]interface{} // [key string] v1.Node
+}
+
+func NewNodeMap() *NodeMap {
+	data := make(map[string]interface{}, 0)
+	return &NodeMap{data: data}
+}
+
+func(n *NodeMap) Get(name string) *corev1.Node{
+	if node, ok := n.data[name]; ok{
+		return node.(*corev1.Node)
+	}
+	return nil
+}
+
+func(n *NodeMap) Add(item *corev1.Node){
+
+	n.data[item.Name] = item
+}
+
+func(n *NodeMap) Update(item *corev1.Node) bool {
+	n.data[item.Name] = item
+	return true
+}
+
+func(n *NodeMap) Delete(node *corev1.Node){
+
+	delete(n.data, node.Name)
+}
+
+func(n *NodeMap) ListAll() []*corev1.Node {
+
+	ret := make([]*corev1.Node, 0)
+
+	for _, v := range n.data {
+		node := v.(*corev1.Node)
+		ret = append(ret, node)
+	}
+
+	return ret
+}
 

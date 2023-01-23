@@ -47,6 +47,7 @@ func main() {
 		Mount("", // TODO: 支持其他更多工作负载资源
 			controllers.NewDeploymentCtl(),
 			controllers.NewPodCtl(),
+			controllers.NewNodeCtl(),
 
 		).
 		Attach(

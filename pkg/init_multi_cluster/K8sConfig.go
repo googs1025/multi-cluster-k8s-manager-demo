@@ -9,26 +9,15 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/metrics/pkg/client/clientset/versioned"
 	"log"
 	"mutli-cluster-k8s-manager/pkg/models"
 	"mutli-cluster-k8s-manager/pkg/services"
 )
 
-type K8sConfig struct {
-	DepHandler []*services.DeploymentHandler `inject:"-"`
-	//RsHandler []*services.RsHandler `inject:"-"`
-	//PodHandler []*services.PodHandler        `inject:"-"`
-	//NsHandler  []*services.NamespaceHandler  `inject:"-"`
-	//EventHandler []*services.EventHandler `inject:"-"`
-	//NodeHandler []*services.NodeHandler `inject:"-"`
-}
-
-func NewK8sConfig() *K8sConfig {
-	return &K8sConfig{}
-}
 
 // 初始化 系统 配置
-func(*K8sConfig) InitSysConfig() *models.SysConfig{
+func InitSysConfig() *models.SysConfig{
 	b, err := ioutil.ReadFile("app.yaml")
 	if err != nil {
 		log.Fatal(err)
@@ -62,6 +51,16 @@ func InitClient(config *rest.Config) kubernetes.Interface {
 	return client
 }
 
+// metric客户端
+func InitMetricClient(config *rest.Config) *versioned.Clientset {
+
+	c, err := versioned.NewForConfig(config)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return c
+}
+
 func InitInformer(initClient kubernetes.Interface, clusterName string) informers.SharedInformerFactory {
 
 	fact := informers.NewSharedInformerFactory(initClient, 0)
@@ -78,12 +77,12 @@ func InitInformer(initClient kubernetes.Interface, clusterName string) informers
 	//nsInformer := fact.Core().V1().Namespaces()
 	//nsInformer.Informer().AddEventHandler(k.NsHandler)
 	//
-	//eventInformer := fact.Core().V1().Events()
-	//eventInformer.Informer().AddEventHandler(k.EventHandler)
+	eventInformer := fact.Core().V1().Events()
+	eventInformer.Informer().AddEventHandler(services.MultiClusterResourceHandler.EventHandlerList[clusterName])
 	//
 	//
-	//NodeInformer := fact.Core().V1().Nodes()
-	//NodeInformer.Informer().AddEventHandler(k.NodeHandler)
+	NodeInformer := fact.Core().V1().Nodes()
+	NodeInformer.Informer().AddEventHandler(services.MultiClusterResourceHandler.NodeHandlerList[clusterName])
 
 	fact.Start(wait.NeverStop)
 

@@ -10,8 +10,9 @@ import (
 
 // deployment控制器
 type PodCtl struct {
-	K8sClient kubernetes.Interface                `inject:"-"`
+	K8sClient kubernetes.Interface  `inject:"-"`
 	PodService *services.PodService `inject:"-"`
+
 }
 
 func NewPodCtl() *PodCtl {
