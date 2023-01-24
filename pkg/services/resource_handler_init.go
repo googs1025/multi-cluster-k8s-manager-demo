@@ -8,6 +8,8 @@ type ResourcesHandler struct {
 	PodHandlerList        map[string]*PodHandler
 	EventHandlerList      map[string]*EventHandler
 	NodeHandlerList      map[string]*NodeHandler
+	NamespaceHandlerList map[string]*NamespaceHandler
+
 
 }
 
@@ -17,6 +19,7 @@ func NewResourcesHandler() *ResourcesHandler {
 		PodHandlerList: map[string]*PodHandler{},
 		EventHandlerList: map[string]*EventHandler{},
 		NodeHandlerList: map[string]*NodeHandler{},
+		NamespaceHandlerList: map[string]*NamespaceHandler{},
 	}
 }
 

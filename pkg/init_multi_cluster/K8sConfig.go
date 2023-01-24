@@ -74,8 +74,8 @@ func InitInformer(initClient kubernetes.Interface, clusterName string) informers
 	podInformer := fact.Core().V1().Pods() //监听pod
 	podInformer.Informer().AddEventHandler(services.MultiClusterResourceHandler.PodHandlerList[clusterName])
 	//
-	//nsInformer := fact.Core().V1().Namespaces()
-	//nsInformer.Informer().AddEventHandler(k.NsHandler)
+	nsInformer := fact.Core().V1().Namespaces()
+	nsInformer.Informer().AddEventHandler(services.MultiClusterResourceHandler.NamespaceHandlerList[clusterName])
 	//
 	eventInformer := fact.Core().V1().Events()
 	eventInformer.Informer().AddEventHandler(services.MultiClusterResourceHandler.EventHandlerList[clusterName])

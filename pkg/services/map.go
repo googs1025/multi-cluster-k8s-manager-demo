@@ -4,7 +4,9 @@ import (
 	"fmt"
 	v1 "k8s.io/api/apps/v1"
 	corev1 "k8s.io/api/core/v1"
+	"mutli-cluster-k8s-manager/pkg/models"
 	"reflect"
+	"sort"
 )
 
 // DeploymentMap 使用informer监听资源变化后，事件变化加入map中
@@ -253,3 +255,75 @@ func(n *NodeMap) ListAll() []*corev1.Node {
 	return ret
 }
 
+// namespace map
+type NamespaceMap struct {
+	data map[string]interface{} // [key string] *corev1.Namespace
+}
+
+func NewNamespaceMap() *NamespaceMap {
+	data := make(map[string]interface{}, 0)
+	return &NamespaceMap{data: data}
+}
+
+func (n *NamespaceMap) Add(ns *corev1.Namespace) {
+	n.data[ns.Name] = ns
+}
+
+func (n *NamespaceMap) Update(ns *corev1.Namespace) {
+	n.data[ns.Name] = ns
+}
+
+func (n *NamespaceMap) Delete(ns *corev1.Namespace) {
+	delete(n.data, ns.Name)
+}
+
+func (n *NamespaceMap) Get(namespace string) *corev1.Namespace {
+	if item, ok := n.data[namespace]; ok {
+		ns := item.(*corev1.Namespace)
+		return ns
+	}
+	return nil
+}
+
+func (n *NamespaceMap) ListAll() []*models.NamespaceModel {
+
+	items := convertToMapItems(n.data)
+	sort.Sort(items)
+
+	res := make([]*models.NamespaceModel, 0)
+
+	for _, value := range items {
+		nsName := &models.NamespaceModel{Name: value.key}
+		res = append(res, nsName)
+	}
+
+
+	return res
+}
+
+
+type MapItems []*MapItem
+type MapItem struct {
+	key string
+	value interface{}
+}
+//把sync.map  转为 自定义切片
+func convertToMapItems(m map[string]interface{}) MapItems{
+	items := make(MapItems, 0)
+
+	for key, value := range m {
+		items = append(items, &MapItem{key:key,value:value})
+	}
+
+	return items
+}
+
+func(m MapItems) Len() int{
+	return len(m)
+}
+func(m MapItems) Less(i, j int) bool{
+	return m[i].key < m[j].key
+}
+func(m MapItems) Swap(i, j int){
+	m[i], m[j] = m[j], m[i]
+}

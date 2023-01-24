@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/shenyisyn/goft-gin/goft"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/klog/v2"
 	"mutli-cluster-k8s-manager/pkg/init_multi_cluster"
 	"mutli-cluster-k8s-manager/pkg/services"
 )
@@ -23,7 +24,7 @@ func NewClusterCtl() *ClusterCtl {
 
 // Name 实现deployment controller 框架规范
 func (*ClusterCtl) Name() string {
-	return "PodCtl"
+	return "ClusterCtl"
 }
 
 // Build 实现deployment controller 路由 框架规范
@@ -36,7 +37,8 @@ func (cl *ClusterCtl) List(c *gin.Context) goft.Json {
 
 	// 配合前端
 
-	clusterList := init_multi_cluster.ListClusterName()
+	clusterList := init_multi_cluster.ListCluster()
+	klog.Info("cluster list!")
 	return gin.H{
 		"code": 20000,
 		"data": clusterList,

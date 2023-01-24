@@ -42,6 +42,9 @@ func (m *MultiClusterClient) parseConfigs(files []fs.FileInfo, path string) {
 		nodeHandler := services.NewNodeHandler()
 		services.MultiClusterResourceHandler.NodeHandlerList[res.Host] = nodeHandler
 
+		namespaceHandler := services.NewNamespaceHandler()
+		services.MultiClusterResourceHandler.NamespaceHandlerList[res.Host] = namespaceHandler
+
 		informerFactory := InitInformer(client, res.Host)
 		MultiClusterController.facts[res.Host] = informerFactory
 

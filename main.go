@@ -49,6 +49,8 @@ func main() {
 			controllers.NewPodCtl(),
 			controllers.NewNodeCtl(),
 			controllers.NewClusterCtl(),
+			controllers.NewNamespaceCtl(),
+			controllers.NewWsCtl(),
 
 		).
 		Attach(
