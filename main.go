@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/shenyisyn/goft-gin/goft"
+	"k8s.io/klog/v2"
 	"mutli-cluster-k8s-manager/pkg/controllers"
 	_ "mutli-cluster-k8s-manager/pkg/init_multi_cluster"
 	_ "mutli-cluster-k8s-manager/pkg/services"
@@ -61,6 +62,7 @@ func main() {
 	//server.Static("/dashboard", "./admin")
 	//server.Static("/static", "./admin/static")
 
+	klog.Info("multi-kubernetes-server start!")
 	server.Launch()
 
 }

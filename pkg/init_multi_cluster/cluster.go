@@ -1,6 +1,7 @@
 package init_multi_cluster
 
 import (
+	"k8s.io/klog/v2"
 	"mutli-cluster-k8s-manager/pkg/models"
 )
 
@@ -41,8 +42,11 @@ func ListCluster() []*models.ClusterModel {
 
 func GetClusterName(name string) string {
 	if value, ok := MultiClusterController.clusters[name]; ok {
+		klog.Infof("get the cluster name: ", value)
 		return value
 	}
+
+	klog.Errorf("not found the cluster name: ", name)
 
 	return ""
 }

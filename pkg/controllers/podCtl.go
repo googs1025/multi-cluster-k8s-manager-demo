@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/shenyisyn/goft-gin/goft"
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/klog/v2"
 	"mutli-cluster-k8s-manager/pkg/init_multi_cluster"
 	"mutli-cluster-k8s-manager/pkg/services"
 )
@@ -38,7 +39,7 @@ func (p *PodCtl) List(c *gin.Context) goft.Json {
 	// 配合前端
 
 	clusterName1 := init_multi_cluster.GetClusterName(clusterName)
-
+	klog.Info("pod list!")
 	return gin.H{
 		"code": 20000,
 		"data": p.PodService.ListByNamespace(namespace, clusterName1),

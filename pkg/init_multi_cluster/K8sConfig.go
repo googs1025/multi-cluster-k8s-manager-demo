@@ -1,7 +1,6 @@
 package init_multi_cluster
 
 import (
-	"fmt"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -9,6 +8,7 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/klog/v2"
 	"k8s.io/metrics/pkg/client/clientset/versioned"
 	"log"
 	"mutli-cluster-k8s-manager/pkg/models"
@@ -64,7 +64,8 @@ func InitMetricClient(config *rest.Config) *versioned.Clientset {
 func InitInformer(initClient kubernetes.Interface, clusterName string) informers.SharedInformerFactory {
 
 	fact := informers.NewSharedInformerFactory(initClient, 0)
-	fmt.Printf("cluster %s start informer!! \n", clusterName)
+
+	klog.Infof("cluster %s start informer!! \n", clusterName)
 	deploymentInformer := fact.Apps().V1().Deployments()
 	deploymentInformer.Informer().AddEventHandler(services.MultiClusterResourceHandler.DeploymentHandlerList[clusterName])
 

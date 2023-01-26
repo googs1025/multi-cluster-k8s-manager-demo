@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/fs"
 	"io/ioutil"
+	"k8s.io/klog/v2"
 	"mutli-cluster-k8s-manager/pkg/common"
 	"mutli-cluster-k8s-manager/pkg/helpers"
 	"mutli-cluster-k8s-manager/pkg/services"
@@ -15,10 +16,13 @@ func (m *MultiClusterClient) ReadMultiClusterConfig() {
 	p := common.GetWd()
 	files, _ := ioutil.ReadDir(p + "/resources")
 	path := p + "/resources"
+	klog.Infof("start to read file from %s", path)
 	m.parseConfigs(files, path)
 }
 
 func (m *MultiClusterClient) parseConfigs(files []fs.FileInfo, path string) {
+
+	klog.Infof("parse config!")
 
 	for i, f := range files {
 		// 读取不同config文件
@@ -49,7 +53,7 @@ func (m *MultiClusterClient) parseConfigs(files []fs.FileInfo, path string) {
 		informerFactory := InitInformer(client, res.Host)
 		MultiClusterController.facts[res.Host] = informerFactory
 
-		// 加入集群名
+		// 加入集群名 cluster0 cluster1 ... 类推
 		clusterName := fmt.Sprintf("cluster%s", strconv.Itoa(i))
 		MultiClusterController.setClusterName(res.Host, clusterName)
 
