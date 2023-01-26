@@ -7,8 +7,9 @@
 
 ### 启动步骤：
 1. 目录下创建一个resources文件，把集群的.kube/config文件复制一份放入(记得cluster server需要改成"公网ip")。
-2. 可以放置多个.kube/config配置文件，支持多集群list查询。
-3. go run main.go启动服务
+2. 本项目使用insecurity模式，所以config文件需要把certificate-authority-data字段删除，否则连接会报错。
+3. 可以放置多个.kube/config配置文件，支持多集群list查询。
+4. go run main.go启动服务
 ```
 ➜  mutli-cluster-k8s-manager git:(main) ✗ go run main.go
 cluster https://xxxxxx:6443 start informer!!
@@ -28,7 +29,7 @@ Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-
 [GIN-debug] Listening and serving HTTP on :8080
 
 ```
-4. 接口调用测试：
+5. 接口调用测试：
 注意：调用接口时，如果不写query，cluster默认取第一个集群的结果，namespace默认取default
 ```
 http://localhost:8080/pods

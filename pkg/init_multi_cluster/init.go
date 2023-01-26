@@ -6,8 +6,10 @@ import (
 	"mutli-cluster-k8s-manager/pkg/helpers"
 )
 
+// MultiClusterController
 var MultiClusterController *MultiClusterClient
 
+// MultiClusterClient 全局存放多集群的 client informer cluster名的数据结构。
 type MultiClusterClient struct {
 	clients 		map[string]kubernetes.Interface
 	facts   		map[string]informers.SharedInformerFactory
@@ -27,5 +29,6 @@ func NewMultiClusterClient() *MultiClusterClient {
 func init() {
 	helpers.MultiVersionClusterController = helpers.NewMultiClusterVersionClient()
 	MultiClusterController = NewMultiClusterClient()
+	// 初始化多集群资源。
 	MultiClusterController.ReadMultiClusterConfig()
 }
